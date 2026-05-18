@@ -2,17 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/note.dart';
 
 class NoteService {
-  final CollectionReference _notesCollection =
-      FirebaseFirestore.instance.collection('notes');
+  final CollectionReference _notesCollection = FirebaseFirestore.instance
+      .collection('notes');
 
-  /// Get all notes as a real-time stream, ordered by createdAt descending
+  /// Stream of all notes, ordered by creation date (newest first)
   Stream<List<Note>> getNotes() {
     return _notesCollection
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) => Note.fromDocument(doc)).toList();
-    });
+          return snapshot.docs.map((doc) {
+            return Note.fromMap(doc.id, doc.data() as Map<String, dynamic>);
+          }).toList();
+        });
   }
 
   /// Add a new note to Firestore

@@ -7,11 +7,11 @@ environment:
   sdk: ^3.11.5
 
 dependencies:
-  cloud_firestore: ^6.4.1
-  firebase_core: ^4.9.0
   flutter:
     sdk: flutter
-  image_picker: ^1.2.2
+  firebase_core: ^4.7.0
+  cloud_firestore: ^6.3.0
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
