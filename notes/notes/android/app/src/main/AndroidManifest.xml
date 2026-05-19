@@ -31,8 +31,12 @@
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+        <!-- Matikan Impeller jika aplikasi Force Close di HP tertentu -->
+        <!-- <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
-            android:value="false" />
+            android:value="false" /> -->
 
         <!-- Set Default Channel ID untuk FCM -->
         <meta-data
