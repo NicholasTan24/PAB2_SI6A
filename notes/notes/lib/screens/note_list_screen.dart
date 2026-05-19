@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:notes/screens/subscribe_screen.dart';
 import '../models/note.dart';
 import '../services/note_service.dart';
 import '../widgets/note_dialog.dart';
@@ -386,6 +387,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       tooltip: 'Hapus',
                       constraints: const BoxConstraints(),
                       padding: const EdgeInsets.all(8),
+                    ),
+
+                    IconButton(
+                      icon: const Icon(Icons.subscriptions),
+                      tooltip: 'Langganan Topik',
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SubscribeScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
