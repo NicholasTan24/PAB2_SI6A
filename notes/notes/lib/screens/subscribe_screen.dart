@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/fcm_service.dart';
+import '../l10n/app_localizations.dart';
 
 class SubscribeScreen extends StatefulWidget {
-  const SubscribeScreen({Key? key}) : super(key: key);
+  const SubscribeScreen({super.key});
 
   @override
   State<SubscribeScreen> createState() => _SubscribeScreenState();
@@ -35,8 +36,9 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
 
       // Ensure 'notes' and 'berita' are in the list if they are default subscribed
       if (!_subscribedTopics.contains('notes')) _subscribedTopics.add('notes');
-      if (!_subscribedTopics.contains('berita'))
+      if (!_subscribedTopics.contains('berita')) {
         _subscribedTopics.add('berita');
+      }
 
       _saveSubscribedTopics();
     });
@@ -88,99 +90,107 @@ class _SubscribeScreenState extends State<SubscribeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final otherTopics = _subscribedTopics
         .where((t) => !_suggestedTopics.contains(t))
         .toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Langganan Topik')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Tambah Topik Kustom',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _topicController,
-                    decoration: const InputDecoration(
-                      hintText: 'Misal: hiburan, game',
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _subscribeCustomTopic,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: const Text('Langganan'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Saran Topik',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _suggestedTopics.length,
-              itemBuilder: (context, index) {
-                final topic = _suggestedTopics[index];
-                final isSubscribed = _subscribedTopics.contains(topic);
-
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: ListTile(
-                    title: Text(topic),
-                    trailing: Switch(
-                      value: isSubscribed,
-                      onChanged: (value) => _toggleSubscription(topic),
-                    ),
-                  ),
-                );
-              },
-            ),
-            if (otherTopics.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              const Text(
-                'Topik Lainnya',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
+      appBar: AppBar(title: Text(l10n.subscribeScreenTitle)),
+      body: Column(
+        children: [
+          Text(l10n.customTopicTitle),
+          TextField(
+            decoration: InputDecoration(hintText: l10n.customTopicHint),
+          ),
+          ElevatedButton(
+            onPressed: _subscribeCustomTopic,
+            child: Text(l10n.subscribe),
+          ),
+          Text(l10n.suggestedTopics),
+          ElevatedButton(
+            onPressed: _subscribeCustomTopic,
+            child: Text(l10n.subscribe),
+          ),
+          Text(l10n.suggestedTopics),
+          // ...
+          const SizedBox(height: 8),
+          Row(
+            children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: otherTopics.length,
-                  itemBuilder: (context, index) {
-                    final topic = otherTopics[index];
-
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        title: Text(topic),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _toggleSubscription(topic),
-                        ),
-                      ),
-                    );
-                  },
+                child: TextField(
+                  controller: _topicController,
+                  decoration: const InputDecoration(
+                    hintText: 'Misal: hiburan, game',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                  ),
                 ),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: _subscribeCustomTopic,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text('Langganan'),
               ),
             ],
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Saran Topik',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _suggestedTopics.length,
+            itemBuilder: (context, index) {
+              final topic = _suggestedTopics[index];
+              final isSubscribed = _subscribedTopics.contains(topic);
+
+              return Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  title: Text(topic),
+                  trailing: Switch(
+                    value: isSubscribed,
+                    onChanged: (value) => _toggleSubscription(topic),
+                  ),
+                ),
+              );
+            },
+          ),
+          if (otherTopics.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            const Text(
+              'Topik Lainnya',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ListView.builder(
+                itemCount: otherTopics.length,
+                itemBuilder: (context, index) {
+                  final topic = otherTopics[index];
+
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      title: Text(topic),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _toggleSubscription(topic),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
